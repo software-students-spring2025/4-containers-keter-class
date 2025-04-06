@@ -1,11 +1,19 @@
+"""
+Login
+"""
 from flask import Blueprint, render_template, request, redirect, url_for, session, flash
+from flask import current_app as app
 from werkzeug.security import generate_password_hash, check_password_hash
-from . import mongo
+from flask_pymongo import PyMongo
+mongo = PyMongo(app)
 
 auth = Blueprint("auth", __name__)
 
 @auth.route("/login", methods=["GET", "POST"])
 def login():
+    """
+    login
+    """
     if request.method == "POST":
         user = mongo.db.users.find_one({"email": request.form["email"]})
         if user and check_password_hash(user["password"], request.form["password"]):
@@ -16,6 +24,9 @@ def login():
 
 @auth.route("/register", methods=["GET", "POST"])
 def register():
+    """
+    register
+    """
     if request.method == "POST":
         existing = mongo.db.users.find_one({"email": request.form["email"]})
         if existing:
@@ -32,5 +43,8 @@ def register():
 
 @auth.route("/logout")
 def logout():
+    """
+    logout
+    """
     session.clear()
     return redirect(url_for("auth.login"))

@@ -1,11 +1,18 @@
+"""
+Web app initialization
+"""
+import os
 from flask import Flask
 from flask_pymongo import PyMongo
 from dotenv import load_dotenv
-import os
-
+from .routes import main
+from .auth import auth
 mongo = PyMongo()
 
 def create_app():
+    """
+    initialize app
+    """
     load_dotenv()
 
     app = Flask(__name__)
@@ -13,11 +20,9 @@ def create_app():
     app.secret_key = os.getenv("SECRET_KEY")
 
     mongo.init_app(app)
-
-    from .routes import main
-    from .auth import auth
+    db = mongo.db
 
     app.register_blueprint(main)
     app.register_blueprint(auth)
 
-    return app
+    return app, db
