@@ -1,0 +1,20 @@
+name: Keter Class
+on: [pull_request]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python: ["3.9", "3.11"]
+    steps:
+      - name: Checkout Repo to Actions Runner
+        uses: actions/checkout@v4
+      - name: Install Python, pipenv, and Pipfile packages
+        uses: kojoru/prepare-pipenv@v1
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Turn on "editable" mode
+        run: |
+          pipenv install pytest
+          pipenv --venv
+          pipenv run python -m pytest
