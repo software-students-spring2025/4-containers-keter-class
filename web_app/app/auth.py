@@ -1,13 +1,12 @@
-from flask import Blueprint, render_template, request, redirect, url_for, session, flash
+from flask import Blueprint, render_template, request, redirect, url_for, session, flash, current_app
 from werkzeug.security import generate_password_hash, check_password_hash
-from . import mongo
 
 auth = Blueprint("auth", __name__)
 
 @auth.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
-        user = mongo.db.users.find_one({"email": request.form["email"]})
+        user = current_app.db.users.find_one({"email": request.form["email"]})
         if user and check_password_hash(user["password"], request.form["password"]):
             session["user"] = user["email"]
             return redirect(url_for("main.dashboard"))
@@ -17,12 +16,12 @@ def login():
 @auth.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "POST":
-        existing = mongo.db.users.find_one({"email": request.form["email"]})
+        existing = current_app.db.users.find_one({"email": request.form["email"]})
         if existing:
             flash("Email already registered.")
         else:
             hashed_pw = generate_password_hash(request.form["password"])
-            mongo.db.users.insert_one({
+            current_app.db.users.insert_one({
                 "email": request.form["email"],
                 "password": hashed_pw
             })

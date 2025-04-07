@@ -1,9 +1,7 @@
 from flask import Flask
-from flask_pymongo import PyMongo
 from dotenv import load_dotenv
+from pymongo import MongoClient
 import os
-
-mongo = PyMongo()
 
 def create_app():
     load_dotenv()
@@ -12,8 +10,11 @@ def create_app():
     app.config["MONGO_URI"] = os.getenv("MONGO_URI")
     app.secret_key = os.getenv("SECRET_KEY")
 
-    mongo.init_app(app)
+    # Set up pymongo client and attach to app
+    mongo_client = MongoClient(app.config["MONGO_URI"])
+    app.db = mongo_client.get_default_database()  # auto-selects the db from the URI
 
+    # Register blueprints
     from .routes import main
     from .auth import auth
 
