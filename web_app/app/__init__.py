@@ -1,30 +1,24 @@
-"""
-Web app initialization
-"""
-import os
 from flask import Flask
-from flask_pymongo import PyMongo
 from dotenv import load_dotenv
-from .routes import main
-from .auth import auth
-
-mongo = PyMongo()
-
+from pymongo import MongoClient
+import os
 
 def create_app():
-    """
-    initialize app
-    """
     load_dotenv()
 
     app = Flask(__name__)
     app.config["MONGO_URI"] = os.getenv("MONGO_URI")
     app.secret_key = os.getenv("SECRET_KEY")
 
-    mongo.init_app(app)
-    db = mongo.db  # pylint: disable=invalid-name
+    # Set up pymongo client and attach to app
+    mongo_client = MongoClient(app.config["MONGO_URI"])
+    app.db = mongo_client.get_default_database()  # auto-selects the db from the URI
+
+    # Register blueprints
+    from .routes import main
+    from .auth import auth
 
     app.register_blueprint(main)
     app.register_blueprint(auth)
 
-    return app, db
+    return app
