@@ -9,8 +9,23 @@ Our application contains the following: web page that helps you track your credi
 * Anna Ye
 * Andrew Bao
 
-# How to Run
+# How to Run via Docker
 ```
+
+```
+
+### Running without Docker (Mac instructions)
+```
+cd web_app
+python3 -m venv venv
+source venv/bin/activate 
+pip install -r requirements.txt
+brew tap mongodb/brew
+brew uninstall mongodb-community
+brew cleanup
+brew install mongodb/brew/mongodb-community
+brew services start mongodb/brew/mongodb-community
+./venv/bin/python run.py
 ```
 
 # Technology
