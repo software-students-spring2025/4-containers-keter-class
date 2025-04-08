@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 from pymongo import MongoClient
 import os
 
+
 def create_app():
     load_dotenv()
 

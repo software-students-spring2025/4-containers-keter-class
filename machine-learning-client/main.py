@@ -1,6 +1,7 @@
 """
 Machine learning API and parsing and storage of credit card information
 """
+
 import re
 
 TEST_CARD_SCAN = (
