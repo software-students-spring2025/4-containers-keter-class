@@ -4,6 +4,7 @@ import pytest
 from app import create_app
 from pymongo import MongoClient
 import werkzeug
+
 werkzeug.__version__ = "2.3.7"  # Monkey patch to prevent AttributeError
 
 
@@ -14,12 +15,13 @@ def app():
     os.environ["SECRET_KEY"] = "testing"
 
     app = create_app()
-    
+
     # Drop users collection before each test for a clean slate
     with app.app_context():
         app.db.users.delete_many({})
 
     return app
+
 
 @pytest.fixture
 def client(app):

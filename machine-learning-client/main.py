@@ -2,6 +2,13 @@
 Machine learning API and parsing and storage of credit card information
 """
 import re
+import os
+from pymongo import MongoClient
+
+mongo_client = MongoClient(os.getenv("MONGO_URI"))
+print("MONGO URI!!!!!", os.getenv("MONGO_URI"))
+db = mongo_client.get_default_database()
+card_collection = db.cards
 
 TEST_CARD_SCAN = (
     "realawesomebank.com 12345 AB 03/20 123456ABC "
@@ -13,9 +20,9 @@ TEST_USERNAME = "j3schmidt"
 TEST_CARDNAME = "realawesomebank card 1"
 
 
-def add_card_info(card_scan, username, cardname):
+def parse_card_info(card_scan, username, cardname):
     """
-    Breaks down text scan into card information and saves to MongoDB
+    Breaks down text scan into card information
 
     Parameters:
     card_scan (str): text from ML image scan as a single line string
@@ -39,4 +46,77 @@ def add_card_info(card_scan, username, cardname):
     return cardholder_name, card_number, cvv, expiry_date, username, cardname
 
 
+def add_card_info(card_scan, username, cardname):
+    """
+    Saves card information to MongoDB
+
+    Parameters:
+    card_scan (str): text from ML image scan as a single line string
+    username (str): website user identification (could be replaced with user_id or the likes)
+    cardname (str): user chosen name for identifying multiple cards per user
+    """
+
+    (
+        cardholder_name,
+        card_number,
+        cvv,
+        expiry_date,
+        username,
+        cardname,
+    ) = parse_card_info(card_scan, username, cardname)
+
+    card_collection.find(
+        {
+            "username": username,
+            "cardname": cardname,
+            "cardholder_name": cardholder_name,
+            "card_number": card_number,
+            "cvv": cvv,
+            "expiry_date": expiry_date,
+        }
+    )
+    if not card_collection.find_one({"username": username, "cardname": cardname}):
+        card_collection.insert_one(
+            {
+                "username": username,
+                "cardname": cardname,
+                "cardholder_name": cardholder_name,
+                "card_number": card_number,
+                "cvv": cvv,
+                "expiry_date": expiry_date,
+            }
+        )
+
+    return card_collection.find_one({"username": username, "cardname": cardname})
+
+
+def get_all_cards_from_user(username):
+    """
+    retrieve the names and numbers of all cards belonging to a specific user
+    """
+
+    all_cards = card_collection.find_many({"username": username})
+    card_dict = {}
+    if all_cards is not None:
+        card_dict = {card["cardname"]: card["card_number"] for card in all_cards}
+    return card_dict
+
+
+def get_card_info(username, cardname):
+    """
+    retrieve the information for one card
+    """
+    return card_collection.find_one({"username": username, "cardname": cardname})
+
+
+def delete_card(username, cardname):
+    """
+    remove a card from the database
+    """
+    card_collection.delete_one({"username": username, "cardname": cardname})
+
+
 add_card_info(TEST_CARD_SCAN, TEST_USERNAME, TEST_CARDNAME)
+
+for doc in card_collection.find():
+    print(doc)
