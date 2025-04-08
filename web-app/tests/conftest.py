@@ -11,7 +11,7 @@ werkzeug.__version__ = "2.3.7"  # Monkey patch to prevent AttributeError
 
 
 @pytest.fixture
-def app():
+def app_fixture():
     """
     idk
     """
@@ -29,8 +29,8 @@ def app():
 
 
 @pytest.fixture
-def client(app):
+def client(app_fixture):
     """
     idk
     """
-    return app.test_client()
+    return app_fixture.test_client()
