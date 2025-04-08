@@ -19,13 +19,13 @@ def app():
     os.environ["MONGO_URI"] = "mongodb://localhost:27017/test_flaskdb"
     os.environ["SECRET_KEY"] = "testing"
 
-    app = create_app()
+    app1 = create_app()
 
     # Drop users collection before each test for a clean slate
-    with app.app_context():
-        app.db.users.delete_many({})
+    with app1.app_context():
+        app1.db.users.delete_many({})
 
-    return app
+    return app1
 
 
 @pytest.fixture
