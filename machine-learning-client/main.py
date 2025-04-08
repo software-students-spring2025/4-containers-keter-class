@@ -93,21 +93,21 @@ def scan_card():
 
     if 'file' not in request.files:
         return jsonify({'error': 'No file provided'}), 400
-        
+
     file = request.files['file']
-    
+
     if file.filename == '':
         return jsonify({'error': 'Empty filename'}), 400
-    
+
     username = request.form.get('username', 'default_user')
     cardname = request.form.get('cardname', 'unnamed_card')
-    
+
     image_content = file.read()
     text = detect_text(image_content)
-        
+
     if not text:
         return jsonify({'error': 'No text detected in image'}), 400
-        
+
     card_info = add_card_info(text, username, cardname)
 
     card_data = {
@@ -120,7 +120,7 @@ def scan_card():
     }
 
     print(card_data)
-        
+
     return jsonify({
         'success': True,
         'card_info': card_data
