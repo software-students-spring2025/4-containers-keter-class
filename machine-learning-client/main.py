@@ -2,9 +2,13 @@
 Machine learning API and parsing and storage of credit card information
 """
 import re
-from web_app.app import create_app
+import os
+from pymongo import MongoClient
 
-card_collection = create_app().db.cards
+mongo_client = MongoClient(os.getenv("MONGO_URI"))
+print("MONGO URI!!!!!", os.getenv("MONGO_URI"))
+db = mongo_client.get_default_database()
+card_collection = db.cards
 
 TEST_CARD_SCAN = (
     "realawesomebank.com 12345 AB 03/20 123456ABC "
@@ -61,7 +65,7 @@ def add_card_info(card_scan, username, cardname):
         cardname,
     ) = parse_card_info(card_scan, username, cardname)
 
-    card_collection.find_all(
+    card_collection.find(
         {
             "username": username,
             "cardname": cardname,
