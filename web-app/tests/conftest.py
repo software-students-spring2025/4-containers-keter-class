@@ -1,3 +1,4 @@
+# pylint: disable=redefined-outer-name
 """
 idk
 """
@@ -11,7 +12,7 @@ werkzeug.__version__ = "2.3.7"  # Monkey patch to prevent AttributeError
 
 
 @pytest.fixture
-def app():
+def app_fixture():
     """
     idk
     """
@@ -25,12 +26,12 @@ def app():
     with app1.app_context():
         app1.db.users.delete_many({})
 
-    return app
+    return app1
 
 
 @pytest.fixture
-def client(app1):
+def client(app_fixture):
     """
     idk
     """
-    return app1.test_client()
+    return app_fixture.test_client()
