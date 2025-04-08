@@ -5,6 +5,12 @@ name = "pypi"
 
 [packages]
 pytest = "*"
+flask = "*"
+dotenv = "*"
+flask-pymongo = "*"
+pylint = "*"
+black = "*"
+pymongo = "*"
 
 [dev-packages]
 
