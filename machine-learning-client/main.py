@@ -30,7 +30,7 @@ def detect_text(content):
 
     if not texts:
         return ""
-    
+
     print(texts[0].description)
     return texts[0].description
 
@@ -53,11 +53,17 @@ def add_card_info(card_scan, username, cardname):
     username (str): website user identification (could be replaced with user_id or the likes)
     cardname (str): user chosen name for identifying multiple cards per user
     """
-    
+
     cardholder_name = "CARDHOLDER NAME"
     cardholder_names = re.findall(r'\b[A-Z][a-z]+(?:\s+[A-Z]\.?)?(?:\s+[A-Z][a-z]+)+\b', card_scan)
     # This is dumb, need to find a better way to detect names
-    filtered_names = [name for name in cardholder_names if not any(x in name for x in ["\n", "business", "WORLD", "THRU", "GOOD THRU", "VALID THRU", "GOOD", "VISA", "CREDIT", "UNION", "TEXAS", "REWARDS", "AMERICAN", "EXPRESS", "MASTER", "GOLD", "BLACK", "BUSINESS", "DISCOVER", "BILT"])]
+    filtered_names = [name for name in cardholder_names if not any(x in name for x in [
+        "\n",
+        "business", "WORLD", "THRU", "GOOD THRU", 
+        "VALID THRU", "GOOD", "VISA", "CREDIT", "UNION", 
+        "TEXAS", "REWARDS", "AMERICAN", "EXPRESS", "MASTER", 
+        "GOLD", "BLACK", "BUSINESS", "DISCOVER", "BILT"
+        ])]
     if filtered_names:
         cardholder_name = filtered_names[0]
     #assert len(cardholder_names) == 1, f"{len(cardholder_names)} card holders found"
