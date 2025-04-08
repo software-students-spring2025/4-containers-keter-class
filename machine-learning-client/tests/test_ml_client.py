@@ -1,2 +1,10 @@
+"""
+Testing for ML Client
+"""
+
 def test_hello_world():
-    assert "Hello World" == "Hello World"
+    """
+    Testing hello world
+    """
+    string = "Hello World"
+    assert "Hello World" == string
