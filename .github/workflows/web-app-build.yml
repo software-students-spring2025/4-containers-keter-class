@@ -5,7 +5,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python: ["3.9", "3.11"]
+        python: ["3.10"]
     steps:
       - name: Checkout Repo to Actions Runner
         uses: actions/checkout@v4
