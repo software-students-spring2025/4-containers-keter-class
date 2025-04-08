@@ -3,8 +3,8 @@ idk
 """
 import os
 import pytest
-from app import create_app
 import werkzeug
+from app import create_app
 
 werkzeug.__version__ = "2.3.7"  # Monkey patch to prevent AttributeError
 
