@@ -23,8 +23,8 @@ def create_app():
     app.db = mongo_client.get_default_database()  # auto-selects the db from the URI
 
     # Register blueprints
-    from .routes import main # pylint: disable=import-outside-toplevel
-    from .auth import auth # pylint: disable=import-outside-toplevel
+    from .routes import main  # pylint: disable=import-outside-toplevel
+    from .auth import auth  # pylint: disable=import-outside-toplevel
 
     app.register_blueprint(main)
     app.register_blueprint(auth)

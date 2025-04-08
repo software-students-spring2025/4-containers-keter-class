@@ -1,6 +1,8 @@
 """
 docstring
 """
+
+
 def test_register(client):
     """
     idk
@@ -13,6 +15,7 @@ def test_register(client):
 
     assert response.status_code == 200
     assert b"Please log in" in response.data or b"Login" in response.data
+
 
 def test_register_duplicate(client):
     """
