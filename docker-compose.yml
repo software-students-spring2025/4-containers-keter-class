@@ -16,3 +16,7 @@ services:
       - SECRET_KEY=supersecretkey
     depends_on:
       - mongodb
+  machine-learning-client:
+    build: ./machine-learning-client
+    ports:
+      -
