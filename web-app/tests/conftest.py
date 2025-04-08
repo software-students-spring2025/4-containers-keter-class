@@ -25,7 +25,7 @@ def app():
     with app1.app_context():
         app1.db.users.delete_many({})
 
-    return app
+    return app1
 
 
 @pytest.fixture
