@@ -10,7 +10,7 @@ services:
   web-app:
     build: ./web-app
     ports:
-      - "5000:5000"
+      - "5002:5002"
     environment:
       - MONGO_URI=mongodb://mongodb:27017/flaskdb
       - SECRET_KEY=supersecretkey
@@ -18,6 +18,9 @@ services:
       - mongodb
   machine-learning-client:
     build: ./machine-learning-client
+    environment:
+      - MONGO_URI=mongodb://mongodb:27017/flaskdb
+      - SECRET_KEY=supersecretkey
     ports:
       - "5001:5001"
 

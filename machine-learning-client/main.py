@@ -4,11 +4,20 @@ Machine learning API and parsing and storage of credit card information
 
 import re
 import os
+import requests
 
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template, redirect
 from google.cloud import vision
+from pymongo import MongoClient
 
 app = Flask(__name__)
+'''
+
+mongo_client = MongoClient(os.getenv("MONGO_URI"))
+db = mongo_client.get_database()
+card_collection = db.cards
+'''
+
 
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "client_secrets.json"
 client = vision.ImageAnnotatorClient()
@@ -58,10 +67,13 @@ def parse_card_info(card_scan, username, cardname):
     cardname (str): user chosen name for identifying multiple cards per user
     """
 
+    errors = []
+
     cardholder_name = "CARDHOLDER NAME"
     cardholder_names = re.findall(
         r"\b[A-Z][a-z]+(?:\s+[A-Z]\.?)?(?:\s+[A-Z][a-z]+)+\b", card_scan
     )
+
     # This is dumb, need to find a better way to detect names
     filtered_names = [
         name
@@ -94,27 +106,58 @@ def parse_card_info(card_scan, username, cardname):
     ]
     if filtered_names:
         cardholder_name = filtered_names[0]
-    assert f"{len(cardholder_names)} card holders found"
+
+    if len(filtered_names) != 1:
+        errors.append("cardholder name")
+        cardholder_name = None
 
     card_number = re.findall(r"\d{4} \d{4} \d{4} \d{4}", card_scan)
-    assert len(card_number) == 1, f"{len(card_number)} card numbers found"
+    if len(card_number) != 1:
+        errors.append("card number")
+        card_number = None
 
     cvv = re.findall(r"(?<![.-])\b\d{3}\b(?![.-]\d)", card_scan)
-    if not cvv:
-        cvv = "000"
-    else:
-        cvv = cvv[0]
-    assert f"{len(cvv)} cvvs found"
+    if len(cvv) < 1:
+        errors.append("cvv")
+        cvv = None
 
     # there's a small little date at the top of the card, not sure what it is
     expiry_date = re.findall(r"\d{2}\/\d{2}", card_scan)
-    assert len(expiry_date) >= 1, "no expiry date found"
+    if len(expiry_date) < 1:
+        errors.append("expiry date")
+        expiry_date = None
 
-    card_number = card_number[0]
-    expiry_date = expiry_date[-1]
+    if not errors:
+        card_number = card_number[0]
+        expiry_date = expiry_date[-1]
+        cvv = cvv[0]
 
     return cardholder_name, card_number, cvv, expiry_date, username, cardname
 
+'''
+def add_card_info(card_scan, username, cardname):
+    """
+    add parsed information to database if no matching card found
+    """
+    cardholder_name, card_number, cvv, expiry_date, username, cardname = (
+        parse_card_info(card_scan, username, cardname)
+    )
+    if len(card_collection.find({"username": username, "cardname": cardname})) > 0:
+        return render_template("scan_error.html", errors="duplicate card found")
+
+    card_collection.insert_one(
+        {
+            "username": username,
+            "cardname": cardname,
+            "cardholder_name": cardholder_name,
+            "card_number": card_number,
+            "cvv": cvv,
+            "expiry_date": expiry_date,
+        }
+    )
+
+    return card_collection.find_one({"username": username, "cardname": cardname})
+'''
 
 @app.route("/api/scan", methods=["POST"])
 def scan_card():
@@ -150,8 +193,13 @@ def scan_card():
 
     print(card_data)
 
-    return jsonify({"success": True, "card_info": card_data})
+    web_app_url = "http://web-app:5002/verify_info"  # Adjust the URL as needed
+    response = requests.post(web_app_url, json=card_data, timeout=5)
 
+    if response.status_code == 200:
+        return redirect("/verify_info")
+    else:
+        return jsonify({"error": "Failed to load verify_info page"}), 500
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5001))
