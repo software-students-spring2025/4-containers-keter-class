@@ -13,11 +13,17 @@ Our application contains the following: web page that helps you track your credi
 * Andrew Bao
 
 # How to Run via Docker
+# Machine Learning Client
+```
+cd machine-learning-client
+pipenv shell
+pip install -r requirements.txt
+docker build -t credit-card-ocr .
+docker run -p 5001:5001 -v ${PWD}/client_secrets.json:/app/client_secrets.json credit-card-ocr
 ```
 
-```
-
-### Running without Docker (Mac instructions)
+# Running without Docker (Mac instructions)
+# Web App
 ```
 cd web_app
 python3 -m venv venv
