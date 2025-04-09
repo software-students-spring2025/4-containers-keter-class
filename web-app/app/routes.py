@@ -1,6 +1,7 @@
 """
 Home to dashboard?
 """
+
 import os
 from flask import (
     Flask,
@@ -11,7 +12,7 @@ from flask import (
     url_for,
     request,
     flash,
-    jsonify
+    jsonify,
 )
 from pymongo import MongoClient
 
