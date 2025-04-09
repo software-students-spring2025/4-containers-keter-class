@@ -19,7 +19,7 @@ def detect_text(content):
 
     image = vision.Image(content=content)
 
-    response = client.text_detection(image=image)
+    response = client.text_detection(image=image) # pylint: disable=no-member
     texts = response.text_annotations
 
     if response.error.message:
