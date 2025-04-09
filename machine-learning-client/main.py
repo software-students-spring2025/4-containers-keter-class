@@ -13,6 +13,7 @@ app = Flask(__name__)
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "client_secrets.json"
 client = vision.ImageAnnotatorClient()
 
+
 def detect_text(content):
     """Detects text in the file."""
 
@@ -113,6 +114,7 @@ def parse_card_info(card_scan, username, cardname):
     expiry_date = expiry_date[-1]
 
     return cardholder_name, card_number, cvv, expiry_date, username, cardname
+
 
 @app.route("/api/scan", methods=["POST"])
 def scan_card():
