@@ -13,4 +13,4 @@ google-cloud-vision = "*"
 [dev-packages]
 
 [requires]
-python_version = "3.10"
+python_version = "3.13.2"
