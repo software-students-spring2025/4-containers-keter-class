@@ -2,9 +2,9 @@
 Machine learning API and parsing and storage of credit card information
 """
 import re
+import os
 from flask import Flask, request, jsonify
 from google.cloud import vision
-import os
 
 app = Flask(__name__)
 
@@ -23,9 +23,9 @@ def detect_text(content):
     texts = response.text_annotations
 
     if response.error.message:
-        raise Exception(
-            "{}\nFor more info on error messages, check: "
-            "https://cloud.google.com/apis/design/errors".format(response.error.message)
+        raise RuntimeError(
+            f"{response.error.message}\nFor more info on error messages, check: "
+            "https://cloud.google.com/apis/design/errors"
         )
 
     if not texts:
