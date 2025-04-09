@@ -1,9 +1,17 @@
+"""
+Initialize app
+"""
+
+import os
 from flask import Flask
 from dotenv import load_dotenv
 from pymongo import MongoClient
-import os
+
 
 def create_app():
+    """
+    Set up app
+    """
     load_dotenv()
 
     app = Flask(__name__)
@@ -15,8 +23,8 @@ def create_app():
     app.db = mongo_client.get_default_database()  # auto-selects the db from the URI
 
     # Register blueprints
-    from .routes import main
-    from .auth import auth
+    from .routes import main  # pylint: disable=import-outside-toplevel
+    from .auth import auth  # pylint: disable=import-outside-toplevel
 
     app.register_blueprint(main)
     app.register_blueprint(auth)

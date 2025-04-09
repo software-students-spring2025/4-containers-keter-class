@@ -9,6 +9,7 @@ black = "*"
 pymongo = "*"
 flask = "*"
 google-cloud-vision = "*"
+dotenv = "*"
 
 [dev-packages]
 

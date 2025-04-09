@@ -1,4 +1,7 @@
 ![Lint-free](https://github.com/nyu-software-engineering/containerized-app-exercise/actions/workflows/lint.yml/badge.svg)
+![web-app](https://github.com/software-students-spring2025/4-containers-keter-class/actions/workflows/web-app-build.yml/badge.svg?event=pull_request)
+![ml-client](https://github.com/software-students-spring2025/4-containers-keter-class/actions/workflows/ml-client-build.yml/badge.svg?event=pull_request)
+
 
 # Keter Class
 Our application contains the following: web page that helps you track your credit cards. Uses computer vision to convert credit card to plain text and stores in mongodb, and is displayed.

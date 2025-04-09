@@ -1,20 +1,24 @@
-name: Keter Class
+name: Keter Class Machine Learning Test
 on: [pull_request]
 jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python: ["3.9", "3.11"]
+        python: ["3.10"]
     steps:
       - name: Checkout Repo to Actions Runner
         uses: actions/checkout@v4
-      - name: Install Python, pipenv, and Pipfile packages
-        uses: kojoru/prepare-pipenv@v1
+      - name: Install Python 
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python }}
-      - name: Turn on "editable" mode
+      - name: Install pipenv
+        run: pip install pipenv
+      - name: Test Machine Learning Client
+        working-directory: machine-learning-client
         run: |
           pipenv install pytest
           pipenv --venv
+          pipenv install
           pipenv run python -m pytest

@@ -1,0 +1,29 @@
+name: Keter Class Web App Testing
+on: [pull_request]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python: ["3.10"]
+    steps:
+      - name: Checkout Repo to Actions Runner
+        uses: actions/checkout@v4
+      - name: Install Python 
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Setup Containers with Docker Compose
+        run: |
+          docker compose up -d --build
+      - name: Wait for services to be ready
+        run: sleep 10
+      - name: Install pipenv
+        run: pip install pipenv
+      - name: Test Web App
+        working-directory: web-app
+        run: |
+          pipenv install pytest
+          pipenv --venv
+          pipenv install
+          pipenv run python -m pytest
