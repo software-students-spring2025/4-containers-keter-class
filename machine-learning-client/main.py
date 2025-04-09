@@ -94,21 +94,21 @@ def parse_card_info(card_scan, username, cardname):
     ]
     if filtered_names:
         cardholder_name = filtered_names[0]
-    # assert len(cardholder_names) == 1, f"{len(cardholder_names)} card holders found"
+    assert f"{len(cardholder_names)} card holders found"
 
     card_number = re.findall(r"\d{4} \d{4} \d{4} \d{4}", card_scan)
-    # assert len(card_number) == 1, f"{len(card_number)} card numbers found"
+    assert len(card_number) == 1, f"{len(card_number)} card numbers found"
 
     cvv = re.findall(r"(?<![.-])\b\d{3}\b(?![.-]\d)", card_scan)
-    # assert len(cvv) == 1, f"{len(cvv)} cvvs found"
     if not cvv:
         cvv = "000"
     else:
         cvv = cvv[0]
+    assert f"{len(cvv)} cvvs found"
 
     # there's a small little date at the top of the card, not sure what it is
     expiry_date = re.findall(r"\d{2}\/\d{2}", card_scan)
-    # assert len(expiry_date) >= 1, "no expiry date found"
+    assert len(expiry_date) >= 1, "no expiry date found"
 
     card_number = card_number[0]
     expiry_date = expiry_date[-1]
