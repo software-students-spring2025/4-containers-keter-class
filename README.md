@@ -13,7 +13,7 @@ Our application contains the following: web page that helps you track your credi
 * Andrew Bao
 
 # How to Run via Docker
-# Machine Learning Client
+### Machine Learning Client
 ```
 cd machine-learning-client
 pipenv shell
