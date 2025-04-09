@@ -137,7 +137,7 @@ def scan_card():
     if not text:
         return jsonify({"error": "No text detected in image"}), 400
 
-    card_info = add_card_info(text, username, cardname)
+    card_info = parse_card_info(text, username, cardname)
 
     card_data = {
         "cardholder_name": card_info[0],
