@@ -11,6 +11,7 @@ flask = "*"
 google-cloud-vision = "*"
 dotenv = "*"
 tomli = "*"
+typing-extensions = "*"
 
 [dev-packages]
 
