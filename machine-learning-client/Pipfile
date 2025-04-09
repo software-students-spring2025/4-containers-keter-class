@@ -8,7 +8,10 @@ pylint = "*"
 black = "*"
 pymongo = "*"
 flask = "*"
+google-cloud-vision = "*"
 dotenv = "*"
+tomli = "*"
+typing-extensions = "*"
 
 [dev-packages]
 
