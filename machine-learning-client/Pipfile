@@ -10,6 +10,7 @@ pymongo = "*"
 flask = "*"
 google-cloud-vision = "*"
 dotenv = "*"
+tomli = "*"
 
 [dev-packages]
 
