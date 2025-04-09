@@ -7,9 +7,16 @@
 </head>
 <body>
   <div class="container py-5">
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="alert alert-success" role="alert">
+          {{ messages[0] }}
+        </div>
+      {% endif %}
+    {% endwith %}
     <div class="card shadow p-4">
       <h3 class="mb-4 text-center">Verify or Enter Card Information</h3>
-      <form method="POST" action="/api/save_card">
+      <form method="POST" action="/verify_info">
         <div class="mb-3">
           <label for="cardname" class="form-label">Card Nickname</label>
           <input type="text" class="form-control" id="cardname" name="cardname" value="{{ cardname }}" placeholder="Enter card nickname">

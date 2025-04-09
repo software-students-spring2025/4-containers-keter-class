@@ -6,18 +6,10 @@ import re
 import os
 import requests
 
-from flask import Flask, request, jsonify, render_template, redirect
-from google.cloud import vision
-from pymongo import MongoClient
+from flask import Flask, request, jsonify, redirect
+from google.cloud import vision  # pylint: disable=no-name-in-module
 
 app = Flask(__name__)
-'''
-
-mongo_client = MongoClient(os.getenv("MONGO_URI"))
-db = mongo_client.get_database()
-card_collection = db.cards
-'''
-
 
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "client_secrets.json"
 client = vision.ImageAnnotatorClient()
@@ -47,16 +39,6 @@ def detect_text(content):
     return texts[0].description
 
 
-# TEST_CARD_SCAN = (
-#     "realawesomebank.com 12345 AB 03/20 123456ABC "
-#     "1234 4321 1010 5454 Valid Thru: 01/26 Sec code: 123 "
-#     "JOHN JACOB JINGLEHEIMER SCHMIDT US and Canada 800.421.211 "
-#     "Int'l: 302-594-8200 Made from recycled plastic"
-# )
-# TEST_USERNAME = "j3schmidt"
-# TEST_CARDNAME = "realawesomebank card 1"
-
-
 def parse_card_info(card_scan, username, cardname):
     """
     Breaks down text scan into card information
@@ -71,18 +53,20 @@ def parse_card_info(card_scan, username, cardname):
 
     cardholder_name = "CARDHOLDER NAME"
     cardholder_names = re.findall(
-        r"\b[A-Z][a-z]+(?:\s+[A-Z]\.?)?(?:\s+[A-Z][a-z]+)+\b", card_scan
+        r"\b[A-Z]+[a-z]*(?:\s+[A-Z]+[a-z]*\.?)?(?:\s+[A-Z]+[a-z]*)+\.?(?<!\bUS)\b",
+        card_scan,
     )
+    cardholder_names = [word for item in cardholder_names for word in item.split("\n")]
 
     # This is dumb, need to find a better way to detect names
     filtered_names = [
         name
         for name in cardholder_names
         if not any(
-            x in name
+            x.upper() in name.upper()
             for x in [
                 "\n",
-                "business",
+                "BUSINESS",
                 "WORLD",
                 "THRU",
                 "GOOD THRU",
@@ -101,6 +85,7 @@ def parse_card_info(card_scan, username, cardname):
                 "BUSINESS",
                 "DISCOVER",
                 "BILT",
+                "SEC CODE",
             ]
         )
     ]
@@ -110,54 +95,32 @@ def parse_card_info(card_scan, username, cardname):
     if len(filtered_names) != 1:
         errors.append("cardholder name")
         cardholder_name = None
+        cardholder_name = filtered_names
 
     card_number = re.findall(r"\d{4} \d{4} \d{4} \d{4}", card_scan)
     if len(card_number) != 1:
         errors.append("card number")
         card_number = None
+    else:
+        card_number = card_number[0]
 
     cvv = re.findall(r"(?<![.-])\b\d{3}\b(?![.-]\d)", card_scan)
     if len(cvv) < 1:
         errors.append("cvv")
         cvv = None
+    else:
+        cvv = cvv[0]
 
     # there's a small little date at the top of the card, not sure what it is
     expiry_date = re.findall(r"\d{2}\/\d{2}", card_scan)
     if len(expiry_date) < 1:
         errors.append("expiry date")
         expiry_date = None
-
-    if not errors:
-        card_number = card_number[0]
+    else:
         expiry_date = expiry_date[-1]
-        cvv = cvv[0]
 
-    return cardholder_name, card_number, cvv, expiry_date, username, cardname
+    return cardholder_name, card_number, cvv, expiry_date, username, cardname, errors
 
-'''
-def add_card_info(card_scan, username, cardname):
-    """
-    add parsed information to database if no matching card found
-    """
-    cardholder_name, card_number, cvv, expiry_date, username, cardname = (
-        parse_card_info(card_scan, username, cardname)
-    )
-    if len(card_collection.find({"username": username, "cardname": cardname})) > 0:
-        return render_template("scan_error.html", errors="duplicate card found")
-
-    card_collection.insert_one(
-        {
-            "username": username,
-            "cardname": cardname,
-            "cardholder_name": cardholder_name,
-            "card_number": card_number,
-            "cvv": cvv,
-            "expiry_date": expiry_date,
-        }
-    )
-
-    return card_collection.find_one({"username": username, "cardname": cardname})
-'''
 
 @app.route("/api/scan", methods=["POST"])
 def scan_card():
@@ -175,6 +138,12 @@ def scan_card():
     cardname = request.form.get("cardname", "unnamed_card")
 
     image_content = file.read()
+    text = (
+        "realawesomebank.com 12345 AB 03/20 123456ABC "
+        "1234 4321 1010 5454 Valid Thru: 01/26 Sec code: 123 "
+        "JOHN JACOB JINGLEHEIMER SCHMIDT US and Canada 800.421.211 "
+        "Int'l: 302-594-8200 Made from recycled plastic"
+    )
     text = detect_text(image_content)
 
     if not text:
@@ -194,12 +163,13 @@ def scan_card():
     print(card_data)
 
     web_app_url = "http://web-app:5002/verify_info"  # Adjust the URL as needed
-    response = requests.post(web_app_url, json=card_data, timeout=5)
+    headers = {"Content-Type": "application/json"}
+    response = requests.post(web_app_url, json=card_data, headers=headers, timeout=5)
 
     if response.status_code == 200:
-        return redirect("/verify_info")
-    else:
-        return jsonify({"error": "Failed to load verify_info page"}), 500
+        return redirect(web_app_url)
+    return jsonify({"error": "Failed to load verify_info page"}), 500
+
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5001))
