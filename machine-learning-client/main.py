@@ -47,7 +47,6 @@ def parse_card_info(card_scan, username, cardname):
     cardholder_names = re.findall(
         r"\b[A-Za-z]+(?:\s+[A-Za-z]\.?)?(?:\s+[A-Za-z]+)+\b", card_scan, re.IGNORECASE
     )
-    # This is dumb, need to find a better way to detect names
     filter_terms = [
         "business",
         "world",
@@ -135,7 +134,6 @@ def scan_card():
 
     print("🧠 Parsed card data:", card_data)
 
-    # Send to the web app
     web_app_url = "http://web-app:5002/verify_info"  # ← updated for local use
     headers = {"Content-Type": "application/json"}
 
