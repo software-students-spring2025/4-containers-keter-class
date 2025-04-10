@@ -9,10 +9,17 @@ Our application contains the following: web page that helps you track your credi
 # Team
 * Brian Zou [Brian's Github](https://github.com/brianzou03)
 * Bryant To
-* Anna Ye [[Anna's Github](https://github.com/AnnaTheYe)]
+* Anna Ye [Anna's Github](https://github.com/AnnaTheYe)
 * Andrew Bao
 
 # How to Run via Docker
+### Full Application
+```
+cd 4-containers-keter-class
+pipenv shell
+docker-compose up --build
+```
+
 ### Machine Learning Client
 ```
 cd machine-learning-client
@@ -40,7 +47,7 @@ brew services start mongodb/brew/mongodb-community
 ### Unit tests for web-app
 ```
 cd web-app
-pytest
+pipenv run pytest --cov=app --cov-report=term-missing
 ```
 
 ## Machine Learning Client
@@ -57,7 +64,7 @@ pip install -r requirements.txt
 ### Unit tests for machine learning client
 ```
 cd machine-learning-client
-pytest
+pipenv run pytest --cov=main --cov-report=term-missing
 ```
 
 
