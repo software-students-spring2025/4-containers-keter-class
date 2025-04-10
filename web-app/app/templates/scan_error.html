@@ -15,9 +15,18 @@
             <li class="list-group-item text-danger">{{ error }}</li>
           {% endfor %}
         </ul>
-        <a href="/api/scan" class="btn btn-primary mt-3">Try again</a>
-        or
-        <a href="/verify_info" class="btn btn-primary mt-3">Manually input information</a>
+        
+        <!-- Form to resubmit card data -->
+        <form method="GET" action="{{ url_for('main.verify_info') }}">
+          {% for key, value in card_data.items() %}
+            <input type="hidden" name="{{ key }}" value="{{ value }}">
+          {% endfor %}
+          
+          <button type="submit" class="btn btn-primary mt-3">Manually input information</button>
+        </form>
+
+        <!-- Link to try again -->
+        <a href="{{ url_for('main.upload') }}" class="btn btn-secondary mt-3">Try again</a>
     </div>
   </div>
 </body>

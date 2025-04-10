@@ -1,7 +1,6 @@
 """
-authorization including registration, login, lotgou
+Authorization routes: registration, login, logout
 """
-
 from flask import (
     Blueprint,
     render_template,
@@ -20,14 +19,21 @@ auth = Blueprint("auth", __name__)
 @auth.route("/login", methods=["GET", "POST"])
 def login():
     """
-    Log in to existing account
+    Log into existing account
     """
+    if session.get("user"):
+        next_url = session.pop("next", url_for("main.dashboard"))
+        return redirect(next_url)
+
     if request.method == "POST":
         user = current_app.db.users.find_one({"username": request.form["username"]})
         if user and check_password_hash(user["password"], request.form["password"]):
             session["user"] = user["username"]
-            return redirect(url_for("main.dashboard"))
+            next_url = session.pop("next", url_for("main.dashboard"))
+            return redirect(next_url)
+
         flash("Invalid credentials")
+
     return render_template("login.html")
 
 
@@ -47,13 +53,14 @@ def register():
             )
             flash("Registered successfully. Please log in.")
             return redirect(url_for("auth.login"))
+
     return render_template("register.html")
 
 
 @auth.route("/logout")
 def logout():
     """
-    Log out of session
+    Log out of account
     """
     session.clear()
     return redirect(url_for("auth.login"))
