@@ -59,6 +59,7 @@ typing-extensions = "==4.13.1"
 urllib3 = "==2.3.0"
 
 [dev-packages]
+pytest-cov = "*"
 
 [requires]
 python_version = "3.10"
