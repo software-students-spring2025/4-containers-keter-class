@@ -12,6 +12,7 @@ pytest = "*"
 flask = "*"
 requests = "*"
 jsonify = "*"
+flask-cors = "*"
 
 [dev-packages]
 
