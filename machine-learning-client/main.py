@@ -1,3 +1,4 @@
+# pylint: disable=no-name-in-module,reimported,import-error
 """
 Machine learning API and parsing and storage of credit card information
 """
@@ -5,20 +6,20 @@ Machine learning API and parsing and storage of credit card information
 import os
 import re
 from flask import Flask, request, jsonify
-from flask_cors import CORS  # pylint: disable=import-error
-from google.cloud import vision  # pylint: disable=no-name-in-module,import-error
+from flask_cors import CORS
+from google.cloud import vision
 
 app = Flask(__name__)
 CORS(app)
 
 if os.environ.get("PYTEST_CURRENT_TEST") is None:
-    from google.cloud import vision  # pylint: disable=no-name-in-module
+    from google.cloud import vision
 
     os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "client_secrets.json"
     api_client = vision.ImageAnnotatorClient()
 else:
     from unittest.mock import MagicMock
-    from google.cloud import vision  # pylint: disable=no-name-in-module
+    from google.cloud import vision
 
     api_client = MagicMock()
 
@@ -53,27 +54,6 @@ def parse_card_info(card_scan, username, cardname):
     cardholder_names = re.findall(
         r"\b[A-Za-z]+(?:\s+[A-Za-z]\.?)?(?:\s+[A-Za-z]+)+\b", card_scan, re.IGNORECASE
     )
-    filter_terms = [
-        "business",
-        "world",
-        "thru",
-        "good",
-        "valid",
-        "visa",
-        "credit",
-        "union",
-        "texas",
-        "rewards",
-        "american",
-        "express",
-        "master",
-        "gold",
-        "black",
-        "discover",
-        "bilt",
-        "valid thru",
-        "good thru",
-    ]
 
     filtered_names = [
         name
