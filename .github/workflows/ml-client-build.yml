@@ -9,21 +9,17 @@ jobs:
     steps:
       - name: Checkout Repo to Actions Runner
         uses: actions/checkout@v4
-      - name: Install Python 
+      - name: Install Python
         uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python }}
-      - name: Setup Containers with Docker Compose
-        run: |
-          docker compose up -d --build
-      - name: Wait for services to be ready
-        run: sleep 10
       - name: Install pipenv
         run: pip install pipenv
       - name: Test Machine Learning Client
         working-directory: machine-learning-client
+        env:
+          PYTEST_CURRENT_TEST: "True"  # Set this environment variable
         run: |
-          pipenv install pytest
-          pipenv --venv
+          pipenv install pytest pytest-mock
           pipenv install
           pipenv run python -m pytest
