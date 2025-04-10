@@ -12,6 +12,7 @@ google-cloud-vision = "*"
 dotenv = "*"
 tomli = "*"
 typing-extensions = "*"
+pytest = "*"
 
 [dev-packages]
 

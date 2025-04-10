@@ -42,11 +42,11 @@ EXPECTED_RESULTS = {
 
 
 @pytest.fixture
-def client_app():
+def test_client():
     """Create a test client for the Flask app."""
     app.config["TESTING"] = True
-    with app.test_client() as client:
-        yield client
+    with app.test_client() as flask_client:
+        yield flask_client
 
 
 def read_image(filename):
@@ -82,6 +82,7 @@ class TestCardScanner:
 
         assert result == EXPECTED_RESULTS[image_file]["text"]
 
+
     @pytest.mark.parametrize("image_file", ["card1.png", "card2.png", "card3.png"])
     def test_parse_card_info_with_real_images(self, image_file, mocker):
         """
@@ -116,7 +117,7 @@ class TestCardScanner:
         assert ret_cardname == cardname
 
     @pytest.mark.parametrize("image_file", ["card1.png", "card2.png", "card3.png"])
-    def test_api_endpoint_with_real_images(self, image_file, client_app, mocker):
+    def test_api_endpoint_with_real_images(self, image_file, test_client, mocker):
         """
         Test the complete API endpoint using real images.
         """
@@ -139,7 +140,7 @@ class TestCardScanner:
             "cardname": f"test_{image_file}",
         }
 
-        response = client_app.post(
+        response = test_client.post(
             "/api/scan", data=data, content_type="multipart/form-data"
         )
 
