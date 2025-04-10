@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Upload Credit Card</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Optional: comment this out if style.css 404s -->
+  <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"> -->
+</head>
+<body>
+  <nav class="navbar navbar-dark bg-dark px-3">
+    <span class="navbar-brand">Upload a New Card</span>
+    <a class="btn btn-outline-light ms-auto" href="{{ url_for('main.dashboard') }}">Back to Dashboard</a>
+  </nav>
+
+  <div class="container py-4">
+    <h3 class="mb-4">📸 Scan Your Credit Card</h3>
+
+    <div id="camera-section" class="mb-3">
+      <video id="video" width="400" height="300" autoplay></video><br>
+      <button class="btn btn-primary mt-2" id="capture-btn">Take Picture</button>
+    </div>
+
+    <canvas id="canvas" width="400" height="300" style="display: none;"></canvas>
+
+    <div id="preview-section" class="text-center" style="display: none;">
+      <h5 class="mb-3">Preview:</h5>
+      <img id="photo" class="border" style="max-width: 100%; height: auto;" /><br>
+      <button class="btn btn-success mt-3 me-2" id="upload-btn">Upload & Scan</button>
+      <button class="btn btn-secondary mt-3" id="retake-btn">Retake</button>
+    </div>
+  </div>
+
+  <script>
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const photo = document.getElementById('photo');
+    const captureBtn = document.getElementById('capture-btn');
+    const uploadBtn = document.getElementById('upload-btn');
+    const retakeBtn = document.getElementById('retake-btn');
+
+    let stream;
+
+    navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+      .then((mediaStream) => {
+        stream = mediaStream;
+        video.srcObject = stream;
+      })
+      .catch((err) => {
+        alert("Camera access denied or not supported.");
+        console.error(err);
+      });
+
+    captureBtn.onclick = () => {
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      video.pause();
+      video.style.display = 'none';
+      document.getElementById('preview-section').style.display = 'block';
+      photo.src = canvas.toDataURL('image/png');
+    };
+
+    retakeBtn.onclick = () => {
+      video.play();
+      video.style.display = 'block';
+      document.getElementById('preview-section').style.display = 'none';
+    };
+
+    uploadBtn.onclick = () => {
+      canvas.toBlob((blob) => {
+        if (!blob) {
+          alert("Failed to capture image.");
+          return;
+        }
+        const formData = new FormData();
+        formData.append("file", blob, "card.png");
+        formData.append("username", "{{ session['user'] }}");
+        formData.append("cardname", "WebcamCard-" + Date.now());
+
+        fetch("http://localhost:5001/api/scan", {
+          method: "POST",
+          body: formData
+        })
+        .then(res => {
+          if (!res.ok) {
+            throw new Error("Scan failed");
+          }
+          return res.json();
+        })
+        .then(data => {
+          console.log("✅ Scan complete:", data);
+          window.location.href = "/dashboard";  // Client-side redirect after success
+        })
+        .catch(err => {
+          alert("Upload failed. See console.");
+          console.error(err);
+        });
+      }, 'image/png');
+    };
+  </script>
+</body>
+</html>
