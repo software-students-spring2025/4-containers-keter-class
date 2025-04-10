@@ -4,7 +4,6 @@ Testing the card parser with real card images
 
 import json
 from io import BytesIO
-from pathlib import Path
 from unittest.mock import MagicMock
 import pytest
 
@@ -49,15 +48,9 @@ def test_client():
         yield flask_client
 
 
-# def read_image(filename):
-#     """Helper function to read image data from file."""
-#     images_dir = Path(__file__).parent.parent / "images"
-#     with open(images_dir / filename, "rb") as f:
-#         return f.read()
-
-def read_image(filename):
+def read_image():
     """Helper function that returns mock data instead of reading files."""
-    return b'mock_image_data'
+    return b"mock_image_data"
 
 
 class TestCardScanner:

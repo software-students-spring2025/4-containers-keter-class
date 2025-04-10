@@ -12,12 +12,14 @@ app = Flask(__name__)
 CORS(app)
 
 if os.environ.get("PYTEST_CURRENT_TEST") is None:
-    from google.cloud import vision # pylint: disable=no-name-in-module
+    from google.cloud import vision  # pylint: disable=no-name-in-module
+
     os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "client_secrets.json"
     api_client = vision.ImageAnnotatorClient()
 else:
     from unittest.mock import MagicMock
-    from google.cloud import vision # pylint: disable=no-name-in-module
+    from google.cloud import vision  # pylint: disable=no-name-in-module
+
     api_client = MagicMock()
 
 
