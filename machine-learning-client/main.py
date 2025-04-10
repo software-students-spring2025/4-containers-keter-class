@@ -38,16 +38,6 @@ def detect_text(content):
     return texts[0].description
 
 
-# TEST_CARD_SCAN = (
-#     "realawesomebank.com 12345 AB 03/20 123456ABC "
-#     "1234 4321 1010 5454 Valid Thru: 01/26 Sec code: 123 "
-#     "JOHN JACOB JINGLEHEIMER SCHMIDT US and Canada 800.421.211 "
-#     "Int'l: 302-594-8200 Made from recycled plastic"
-# )
-# TEST_USERNAME = "j3schmidt"
-# TEST_CARDNAME = "realawesomebank card 1"
-
-
 def parse_card_info(card_scan, username, cardname):
     """
     Breaks down text scan into card information
