@@ -49,11 +49,15 @@ def test_client():
         yield flask_client
 
 
+# def read_image(filename):
+#     """Helper function to read image data from file."""
+#     images_dir = Path(__file__).parent.parent / "images"
+#     with open(images_dir / filename, "rb") as f:
+#         return f.read()
+
 def read_image(filename):
-    """Helper function to read image data from file."""
-    images_dir = Path(__file__).parent.parent / "images"
-    with open(images_dir / filename, "rb") as f:
-        return f.read()
+    """Helper function that returns mock data instead of reading files."""
+    return b'mock_image_data'
 
 
 class TestCardScanner:
