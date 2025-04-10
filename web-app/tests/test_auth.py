@@ -21,9 +21,7 @@ def test_register_duplicate(client):
     """
     idk
     """
-    client.post(
-        "/register", data={"username": "testuser", "password": "password123"}
-    )
+    client.post("/register", data={"username": "testuser", "password": "password123"})
     response = client.post(
         "/register",
         data={"username": "testuser", "password": "password123"},
@@ -38,9 +36,7 @@ def test_login_success(client):
     """
     idk
     """
-    client.post(
-        "/register", data={"username": "testuser", "password": "password123"}
-    )
+    client.post("/register", data={"username": "testuser", "password": "password123"})
     response = client.post(
         "/login",
         data={"username": "testuser", "password": "password123"},
@@ -67,9 +63,7 @@ def test_logout(client):
     """
     idk
     """
-    client.post(
-        "/register", data={"username": "testuser", "password": "password123"}
-    )
+    client.post("/register", data={"username": "testuser", "password": "password123"})
     client.post("/login", data={"username": "testuser", "password": "password123"})
     response = client.get("/logout", follow_redirects=True)
 
