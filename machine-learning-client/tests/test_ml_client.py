@@ -42,7 +42,8 @@ EXPECTED_RESULTS = {
 
 
 @pytest.fixture
-def flask_test_client():
+# pylint: disable=redefined-outer-name
+def test_client():
     """Create a test client for the Flask app."""
     app.config["TESTING"] = True
     with app.test_client() as flask_client:
@@ -117,7 +118,7 @@ class TestCardScanner:
         assert ret_cardname == cardname
 
     @pytest.mark.parametrize("image_file", ["card1.png", "card2.png", "card3.png"])
-    def test_api_endpoint_with_real_images(self, image_file, flask_test_client, mocker):
+    def test_api_endpoint_with_real_images(self, image_file, test_client, mocker):
         """
         Test the complete API endpoint using real images.
         """
@@ -140,7 +141,7 @@ class TestCardScanner:
             "cardname": f"test_{image_file}",
         }
 
-        response = flask_test_client.post(
+        response = test_client.post(
             "/api/scan", data=data, content_type="multipart/form-data"
         )
 
