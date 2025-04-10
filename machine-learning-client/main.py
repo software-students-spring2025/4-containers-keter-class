@@ -50,9 +50,7 @@ def parse_card_info(card_scan, username, cardname):
 
     cardholder_name = "CARDHOLDER NAME"
     cardholder_names = re.findall(
-        r"\b[A-Za-z]+(?:\s+[A-Za-z]\.?)?(?:\s+[A-Za-z]+)+\b", 
-        card_scan, 
-        re.IGNORECASE
+        r"\b[A-Za-z]+(?:\s+[A-Za-z]\.?)?(?:\s+[A-Za-z]+)+\b", card_scan, re.IGNORECASE
     )
     # This is dumb, need to find a better way to detect names
     filter_terms = [
@@ -74,7 +72,7 @@ def parse_card_info(card_scan, username, cardname):
         "discover",
         "bilt",
         "valid thru",
-        "good thru"
+        "good thru",
     ]
 
     filtered_names = [
