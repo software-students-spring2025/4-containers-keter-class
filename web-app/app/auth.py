@@ -23,9 +23,9 @@ def login():
     Log in to existing account
     """
     if request.method == "POST":
-        user = current_app.db.users.find_one({"email": request.form["email"]})
+        user = current_app.db.users.find_one({"username": request.form["username"]})
         if user and check_password_hash(user["password"], request.form["password"]):
-            session["user"] = user["email"]
+            session["user"] = user["username"]
             return redirect(url_for("main.dashboard"))
         flash("Invalid credentials")
     return render_template("login.html")
@@ -37,13 +37,13 @@ def register():
     Register new account
     """
     if request.method == "POST":
-        existing = current_app.db.users.find_one({"email": request.form["email"]})
+        existing = current_app.db.users.find_one({"username": request.form["username"]})
         if existing:
-            flash("Email already registered.")
+            flash("Username already registered.")
         else:
             hashed_pw = generate_password_hash(request.form["password"])
             current_app.db.users.insert_one(
-                {"email": request.form["email"], "password": hashed_pw}
+                {"username": request.form["username"], "password": hashed_pw}
             )
             flash("Registered successfully. Please log in.")
             return redirect(url_for("auth.login"))
