@@ -136,7 +136,7 @@ def scan_card():
     print("🧠 Parsed card data:", card_data)
 
     # Send to the web app
-    web_app_url = "http://127.0.0.1:5002/verify_info"  # ← updated for local use
+    web_app_url = "http://web-app:5002/verify_info"  # ← updated for local use
     headers = {"Content-Type": "application/json"}
 
     try:
