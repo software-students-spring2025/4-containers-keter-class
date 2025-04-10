@@ -2,7 +2,6 @@
 docstring
 """
 
-
 def test_register(client):
     """
     idk
@@ -68,3 +67,4 @@ def test_logout(client):
     response = client.get("/logout", follow_redirects=True)
 
     assert b"Login" in response.data
+
