@@ -16,6 +16,7 @@ google = "*"
 pymongo = "*"
 jsonify = "*"
 google-cloud-vision = "*"
+flask-cors = "*"
 
 [dev-packages]
 
