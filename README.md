@@ -12,9 +12,6 @@ Our application contains the following: web page that helps you track your credi
 * Anna Ye [Anna's Github](https://github.com/AnnaTheYe)
 * Andrew Bao
 
-# Project Overview
-the user can use their device's camera to take a picture of their "credit card", and we will very conveniently store all of their "information", including the three numbers other credit card storing applications are too lazy to store for you. 
-
 # How to Run via Docker
 ### Full Application
 ```
