@@ -23,9 +23,9 @@ docker run -p 5001:5001 -v ${PWD}/client_secrets.json:/app/client_secrets.json c
 ```
 
 # Running without Docker (Mac instructions)
-# Web App
+## Web App
 ```
-cd web_app
+cd web-app
 python3 -m venv venv
 source venv/bin/activate 
 pip install -r requirements.txt
@@ -37,13 +37,24 @@ brew services start mongodb/brew/mongodb-community
 ./venv/bin/python run.py
 ```
 
-# Unit tests for web_app
+### Unit tests for web-app
 ```
-cd web_app
+cd web-app
 pytest
 ```
 
-# Unit tests for machine learning client
+## Machine Learning Client
+```
+cd machine-learning-client
+python3 -m venv venv
+source venv/bin/activate 
+pip install -r requirements.txt
+./venv/bin/python main.py
+
+```
+
+
+### Unit tests for machine learning client
 ```
 cd machine-learning-client
 pytest
