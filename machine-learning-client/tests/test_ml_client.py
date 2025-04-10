@@ -8,7 +8,7 @@ from pathlib import Path
 from unittest.mock import MagicMock
 import pytest
 
-from main import app, parse_card_info, detect_text, client
+from main import app, parse_card_info, detect_text, api_client
 
 EXPECTED_RESULTS = {
     "card1.png": {
@@ -76,14 +76,14 @@ class TestCardScanner:
         mock_response.text_annotations = [mock_text]
         mock_response.error.message = ""
 
-        mocker.patch.object(client, "text_detection", return_value=mock_response)
+        mocker.patch.object(api_client, "text_detection", return_value=mock_response)
 
         result = detect_text(image_data)
 
         assert result == EXPECTED_RESULTS[image_file]["text"]
 
-
     @pytest.mark.parametrize("image_file", ["card1.png", "card2.png", "card3.png"])
+    # pylint: disable=too-many-locals
     def test_parse_card_info_with_real_images(self, image_file, mocker):
         """
         Test the complete flow from text detection to parsing with real images.
@@ -98,7 +98,7 @@ class TestCardScanner:
         mock_response.text_annotations = [mock_text]
         mock_response.error.message = ""
 
-        mocker.patch.object(client, "text_detection", return_value=mock_response)
+        mocker.patch.object(api_client, "text_detection", return_value=mock_response)
 
         detected_text = detect_text(image_data)
 
@@ -132,7 +132,7 @@ class TestCardScanner:
         mock_response.text_annotations = [mock_text]
         mock_response.error.message = ""
 
-        mocker.patch.object(client, "text_detection", return_value=mock_response)
+        mocker.patch.object(api_client, "text_detection", return_value=mock_response)
 
         data = {
             "file": (BytesIO(image_data), image_file),

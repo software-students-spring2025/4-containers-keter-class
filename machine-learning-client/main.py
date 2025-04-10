@@ -11,7 +11,7 @@ from google.cloud import vision
 app = Flask(__name__)
 
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "client_secrets.json"
-client = vision.ImageAnnotatorClient()
+api_client = vision.ImageAnnotatorClient()
 
 
 def detect_text(content):
@@ -22,7 +22,7 @@ def detect_text(content):
 
     image = vision.Image(content=content)
 
-    response = client.text_detection(image=image)  # pylint: disable=no-member
+    response = api_client.text_detection(image=image)  # pylint: disable=no-member
     texts = response.text_annotations
 
     if response.error.message:
