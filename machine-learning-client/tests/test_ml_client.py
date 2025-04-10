@@ -48,7 +48,7 @@ def test_client():
         yield flask_client
 
 
-def read_image(filename): # pylint: disable=unused-argument
+def read_image(filename):  # pylint: disable=unused-argument
     """Helper function that returns mock data instead of reading files."""
     return b"mock_image_data"
 
