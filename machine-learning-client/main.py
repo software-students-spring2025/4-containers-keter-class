@@ -10,7 +10,7 @@ from flask_cors import CORS
 from google.cloud import vision  # pylint: disable=no-name-in-module
 
 app = Flask(__name__)
-CORS(app)  
+CORS(app)
 
 # Set up Google Vision
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "client_secrets.json"
@@ -140,7 +140,9 @@ def scan_card():
     headers = {"Content-Type": "application/json"}
 
     try:
-        response = requests.post(web_app_url, json=card_data, headers=headers, timeout=5)
+        response = requests.post(
+            web_app_url, json=card_data, headers=headers, timeout=5
+        )
         if response.status_code == 200:
             return jsonify({"message": "Card scanned and saved successfully."}), 200
         return jsonify({"error": "Failed to save card via /verify_info"}), 500
