@@ -42,11 +42,10 @@ def dashboard():
     """
     Show all saved cards (for now, regardless of user).
     """
-    # if "user" not in session:
-    # return redirect(url_for("auth.login"))
-    # user=session["user"]
-    user = session.get("user", "TestUser")
-    cards = list(card_collection.find({}))  # filter by user later
+    if not session.get("user"):
+        return redirect(url_for("auth.login"))
+    user = session.get("user")
+    cards = list(card_collection.find({"username": user}))  # filter by user later
 
     return render_template("dashboard.html", user=user, cards=cards)
 
