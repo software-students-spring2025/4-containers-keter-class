@@ -6,12 +6,16 @@ name = "pypi"
 [packages]
 pylint = "*"
 black = "*"
-pymongo = "*"
 flask = "*"
-google-cloud-vision = "*"
 dotenv = "*"
 tomli = "*"
 typing-extensions = "*"
+mongomock = "*"
+pytest = "*"
+google = "*"
+pymongo = "*"
+jsonify = "*"
+google-cloud-vision = "*"
 
 [dev-packages]
 
