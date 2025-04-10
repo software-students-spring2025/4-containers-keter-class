@@ -9,7 +9,7 @@ Our application contains the following: web page that helps you track your credi
 # Team
 * Brian Zou [Brian's Github](https://github.com/brianzou03)
 * Bryant To
-* Anna Ye
+* Anna Ye [[Anna's Github](https://github.com/anna)](https://github.com/AnnaTheYe)
 * Andrew Bao
 
 # How to Run via Docker
