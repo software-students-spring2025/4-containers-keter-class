@@ -4,6 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
+flask_cors = "*"
 flask = "==2.0.1"
 werkzeug = "==2.0.1"
 pytest-mock = "==3.14.0"
@@ -57,7 +58,7 @@ tomli = "==2.2.1"
 tomlkit = "==0.13.2"
 typing-extensions = "==4.13.1"
 urllib3 = "==2.3.0"
-flask_cors = "*"
+flask-cors = "*"
 
 [dev-packages]
 pytest-cov = "*"
