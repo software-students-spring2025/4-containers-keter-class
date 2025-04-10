@@ -1,7 +1,5 @@
 flask==2.0.1
 werkzeug==2.0.1
-google-cloud-vision==3.4.0
-pytest==8.1.1
 pytest-mock==3.14.0
 astroid==3.3.9
 beautifulsoup4==4.13.3
@@ -15,7 +13,6 @@ dill==0.3.9
 dnspython==2.7.0
 dotenv==0.9.9
 exceptiongroup==1.2.2
-Flask==3.1.0
 google==3.0.0
 google-api-core==2.24.2
 google-auth==2.38.0
@@ -54,4 +51,3 @@ tomli==2.2.1
 tomlkit==0.13.2
 typing_extensions==4.13.1
 urllib3==2.3.0
-Werkzeug==3.1.3
