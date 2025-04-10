@@ -4,7 +4,7 @@
 
 
 # Keter Class
-Our application contains the following: web page that helps you track your credit cards. Uses computer vision to convert credit card to plain text and stores in mongodb, and is displayed.
+This application is a web page that helps you track your credit cards. Uses computer vision to convert credit card to plain text and stores in mongodb, and is displayed on a dashboard. Users can take a photo of their credit card using their camera, and can access saved card information through the dashboard. Please use example credit cards in `machine-learning-client/Images` unless you want your bank account information potentially stolen.
 
 # Team
 * Brian Zou [Brian's Github](https://github.com/brianzou03)
