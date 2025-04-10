@@ -50,38 +50,39 @@ def parse_card_info(card_scan, username, cardname):
 
     cardholder_name = "CARDHOLDER NAME"
     cardholder_names = re.findall(
-        r"\b[A-Z][a-z]+(?:\s+[A-Z]\.?)?(?:\s+[A-Z][a-z]+)+\b", card_scan
+        r"\b[A-Za-z]+(?:\s+[A-Za-z]\.?)?(?:\s+[A-Za-z]+)+\b", 
+        card_scan, 
+        re.IGNORECASE
     )
     # This is dumb, need to find a better way to detect names
+    filter_terms = [
+        "business",
+        "world",
+        "thru",
+        "good",
+        "valid",
+        "visa",
+        "credit",
+        "union",
+        "texas",
+        "rewards",
+        "american",
+        "express",
+        "master",
+        "gold",
+        "black",
+        "discover",
+        "bilt",
+        "valid thru",
+        "good thru"
+    ]
+
     filtered_names = [
         name
         for name in cardholder_names
-        if not any(
-            x in name
-            for x in [
-                "\n",
-                "business",
-                "WORLD",
-                "THRU",
-                "GOOD THRU",
-                "VALID THRU",
-                "GOOD",
-                "VISA",
-                "CREDIT",
-                "UNION",
-                "TEXAS",
-                "REWARDS",
-                "AMERICAN",
-                "EXPRESS",
-                "MASTER",
-                "GOLD",
-                "BLACK",
-                "BUSINESS",
-                "DISCOVER",
-                "BILT",
-            ]
-        )
+        if not any(term.lower() in name.lower() for term in filter_terms)
     ]
+
     if filtered_names:
         cardholder_name = filtered_names[0]
     assert f"{len(cardholder_names)} card holders found"
