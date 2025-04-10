@@ -96,7 +96,7 @@ def parse_card_info(card_scan, username, cardname):
         card_number = card_number[0]
 
     cvv = re.findall(r"(?<![.-])\b\d{3}\b(?![.-]\d)", card_scan)
-    cvv = cvv[0] if cvv else "000"
+    cvv = cvv[0] if cvv else None
     if not cvv:
         errors.append("cvv")
 
@@ -143,7 +143,7 @@ def scan_card():
     if os.environ.get("PYTEST_CURRENT_TEST") is not None:
         return jsonify({"success": True, "card_info": card_data}), 200
 
-    web_app_url = "http://web-app:5002/verify_info"  # ← updated for local use
+    web_app_url = "http://web-app:5002/verify_info"
     headers = {"Content-Type": "application/json"}
 
     try:

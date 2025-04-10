@@ -15,7 +15,7 @@ EXPECTED_RESULTS = {
         "parsed": {
             "cardholder_name": "CARDHOLDER NAME",
             "card_number": "4019 1234 5678 9010",
-            "cvv": "000",
+            "cvv": None,
             "expiry_date": "00/00",
         },
     },
@@ -24,7 +24,7 @@ EXPECTED_RESULTS = {
         "parsed": {
             "cardholder_name": "Lee M. Cardholder",
             "card_number": "2221 0012 3412 3456",
-            "cvv": "000",
+            "cvv": None,
             "expiry_date": "12/23",
         },
     },
