@@ -121,6 +121,7 @@ class TestCardScanner:
         assert expiry_date == expected["expiry_date"]
         assert ret_username == username
         assert ret_cardname == cardname
+        assert not errors
 
     @pytest.mark.parametrize("image_file", ["card1.png", "card2.png", "card3.png"])
     # pylint: disable=redefined-outer-name
