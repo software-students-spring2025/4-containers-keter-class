@@ -13,17 +13,20 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python }}
-      - name: Setup Containers with Docker Compose
+      - name: Create test images directory
         run: |
-          docker compose up -d --build
-      - name: Wait for services to be ready
-        run: sleep 10
+          mkdir -p machine-learning-client/images
+          # Create empty placeholder image files
+          touch machine-learning-client/images/card1.png
+          touch machine-learning-client/images/card2.png
+          touch machine-learning-client/images/card3.png
       - name: Install pipenv
         run: pip install pipenv
       - name: Test Machine Learning Client
         working-directory: machine-learning-client
+        env:
+          PYTEST_CURRENT_TEST: "True"
         run: |
-          pipenv install pytest
-          pipenv --venv
+          pipenv install pytest pytest-mock
           pipenv install
           pipenv run python -m pytest

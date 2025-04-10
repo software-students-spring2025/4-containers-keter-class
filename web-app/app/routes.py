@@ -26,6 +26,7 @@ mongo_client = MongoClient(os.getenv("MONGO_URI"))
 db = mongo_client.get_database()
 card_collection = db.cards
 
+
 @main.route("/upload", methods=["GET"])
 def upload():
     """
