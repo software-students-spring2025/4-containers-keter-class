@@ -2,24 +2,23 @@
 Machine learning API and parsing and storage of credit card information
 """
 
-import re
 import os
-
-from flask import Flask, request, jsonify
-from google.cloud import vision
+import re
+import requests
+from flask import Flask, request, jsonify, redirect
+from flask_cors import CORS
+from google.cloud import vision  # pylint: disable=no-name-in-module
 
 app = Flask(__name__)
+CORS(app)  
 
+# Set up Google Vision
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "client_secrets.json"
 api_client = vision.ImageAnnotatorClient()
 
 
 def detect_text(content):
-    """Detects text in the file."""
-
-    # with open(path, "rb") as image_file:
-    #     content = image_file.read()
-
+    """Detects text in an image file (raw bytes)."""
     image = vision.Image(content=content)
 
     response = api_client.text_detection(image=image)  # pylint: disable=no-member
@@ -27,26 +26,22 @@ def detect_text(content):
 
     if response.error.message:
         raise RuntimeError(
-            f"{response.error.message}\nFor more info on error messages, check: "
-            "https://cloud.google.com/apis/design/errors"
+            f"{response.error.message}\nSee: https://cloud.google.com/apis/design/errors"
         )
 
     if not texts:
         return ""
 
-    print(texts[0].description)
+    print("🔍 OCR Result:\n", texts[0].description)
     return texts[0].description
 
 
 def parse_card_info(card_scan, username, cardname):
     """
-    Breaks down text scan into card information
-
-    Parameters:
-    card_scan (str): text from ML image scan as a single line string
-    username (str): website user identification (could be replaced with user_id or the likes)
-    cardname (str): user chosen name for identifying multiple cards per user
+    Extracts cardholder name, number, CVV, and expiry date from scanned text.
     """
+
+    errors = []
 
     cardholder_name = "CARDHOLDER NAME"
     cardholder_names = re.findall(
@@ -83,37 +78,39 @@ def parse_card_info(card_scan, username, cardname):
 
     if filtered_names:
         cardholder_name = filtered_names[0]
-    assert f"{len(cardholder_names)} card holders found"
+
+    if len(filtered_names) != 1:
+        errors.append("cardholder name")
+        cardholder_name = filtered_names or None
 
     card_number = re.findall(r"\d{4} \d{4} \d{4} \d{4}", card_scan)
-    assert len(card_number) == 1, f"{len(card_number)} card numbers found"
+    if len(card_number) != 1:
+        errors.append("card number")
+        card_number = None
+    else:
+        card_number = card_number[0]
 
     cvv = re.findall(r"(?<![.-])\b\d{3}\b(?![.-]\d)", card_scan)
+    cvv = cvv[0] if cvv else "000"
     if not cvv:
-        cvv = "000"
-    else:
-        cvv = cvv[0]
-    assert f"{len(cvv)} cvvs found"
+        errors.append("cvv")
 
-    # there's a small little date at the top of the card, not sure what it is
     expiry_date = re.findall(r"\d{2}\/\d{2}", card_scan)
-    assert len(expiry_date) >= 1, "no expiry date found"
+    expiry_date = expiry_date[-1] if expiry_date else None
+    if not expiry_date:
+        errors.append("expiry date")
 
-    card_number = card_number[0]
-    expiry_date = expiry_date[-1]
-
-    return cardholder_name, card_number, cvv, expiry_date, username, cardname
+    return cardholder_name, card_number, cvv, expiry_date, username, cardname, errors
 
 
 @app.route("/api/scan", methods=["POST"])
 def scan_card():
-    """API endpoint to scan a credit card image."""
+    """Handles image uploads and scans for credit card text."""
 
     if "file" not in request.files:
         return jsonify({"error": "No file provided"}), 400
 
     file = request.files["file"]
-
     if file.filename == "":
         return jsonify({"error": "Empty filename"}), 400
 
@@ -127,7 +124,6 @@ def scan_card():
         return jsonify({"error": "No text detected in image"}), 400
 
     card_info = parse_card_info(text, username, cardname)
-
     card_data = {
         "cardholder_name": card_info[0],
         "card_number": card_info[1],
@@ -137,9 +133,20 @@ def scan_card():
         "cardname": card_info[5],
     }
 
-    print(card_data)
+    print("🧠 Parsed card data:", card_data)
 
-    return jsonify({"success": True, "card_info": card_data})
+    # Send to the web app
+    web_app_url = "http://127.0.0.1:5002/verify_info"  # ← updated for local use
+    headers = {"Content-Type": "application/json"}
+
+    try:
+        response = requests.post(web_app_url, json=card_data, headers=headers, timeout=5)
+        if response.status_code == 200:
+            return jsonify({"message": "Card scanned and saved successfully."}), 200
+        return jsonify({"error": "Failed to save card via /verify_info"}), 500
+    except Exception as e:
+        print("❌ Error posting to web app:", str(e))
+        return jsonify({"error": "Failed to communicate with web app."}), 500
 
 
 if __name__ == "__main__":

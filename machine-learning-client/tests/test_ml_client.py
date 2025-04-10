@@ -104,7 +104,7 @@ class TestCardScanner:
 
         username = "test_user"
         cardname = f"test_{image_file}"
-        cardholder_name, card_number, cvv, expiry_date, ret_username, ret_cardname = (
+        cardholder_name, card_number, cvv, expiry_date, ret_username, ret_cardname, errors = (
             parse_card_info(detected_text, username, cardname)
         )
 
