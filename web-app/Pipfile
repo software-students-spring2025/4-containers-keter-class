@@ -13,6 +13,7 @@ flask = "*"
 requests = "*"
 jsonify = "*"
 flask-cors = "*"
+pytest-cov = "*"
 
 [dev-packages]
 
