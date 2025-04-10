@@ -28,6 +28,19 @@ brew services start mongodb/brew/mongodb-community
 ./venv/bin/python run.py
 ```
 
+# Unit tests for web_app
+```
+cd web_app
+pytest
+```
+
+# Unit tests for machine learning client
+```
+cd machine-learning-client
+pytest
+```
+
+
 # Technology
 * Python / Flask
 * Docker
