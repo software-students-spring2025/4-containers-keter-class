@@ -47,6 +47,7 @@ brew services start mongodb/brew/mongodb-community
 ### Unit tests for web-app
 ```
 cd web-app
+pipenv shell
 pipenv run pytest --cov=app --cov-report=term-missing
 ```
 
@@ -64,6 +65,7 @@ pip install -r requirements.txt
 ### Unit tests for machine learning client
 ```
 cd machine-learning-client
+pipenv shell
 pipenv run pytest --cov=main --cov-report=term-missing
 ```
 
