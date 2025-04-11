@@ -76,5 +76,5 @@ View our task board [here](https://github.com/orgs/software-students-spring2025/
 * Python / Flask
 * Docker
 * MongoDB
-* CV Library (here)
+* CV Library [(here)](https://cloud.google.com/vision/docs/ocr)
 
