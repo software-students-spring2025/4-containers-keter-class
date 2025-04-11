@@ -67,6 +67,7 @@ cd machine-learning-client
 pipenv run pytest --cov=main --cov-report=term-missing
 ```
 
+# [Task Board Link](https://github.com/orgs/software-students-spring2025/projects/171)
 
 # Technology
 * Python / Flask
