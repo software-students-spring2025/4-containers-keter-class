@@ -8,7 +8,7 @@ This application is a web page that helps you track your credit cards. Uses comp
 
 # Team
 * Brian Zou [Brian's Github](https://github.com/brianzou03)
-* Bryant To
+* Bryant To [Bryant's Github](https://github.com/bryantto08)
 * Anna Ye [Anna's Github](https://github.com/AnnaTheYe)
 * Andrew Bao
 
