@@ -164,7 +164,7 @@ def scan_card():
     except Exception as e:  # pylint: disable=broad-exception-caught
         import traceback  # pylint: disable=import-outside-toplevel
 
-        traceback.print_exc()  
+        traceback.print_exc()
         return jsonify({"error": f"Internal Server Error: {str(e)}"}), 500
 
 

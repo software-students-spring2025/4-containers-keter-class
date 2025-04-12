@@ -17,7 +17,7 @@ EXPECTED_RESULTS = {
             "card_number": "4019 1234 5678 9010",
             "cvv": None,
             "expiry_date": "00/00",
-            "errors": ['cvv']
+            "errors": ["cvv"],
         },
     },
     "card2.png": {
@@ -27,7 +27,7 @@ EXPECTED_RESULTS = {
             "card_number": "2221 0012 3412 3456",
             "cvv": None,
             "expiry_date": "12/23",
-            "errors": ['cvv']
+            "errors": ["cvv"],
         },
     },
     "card3.png": {
@@ -37,7 +37,7 @@ EXPECTED_RESULTS = {
             "card_number": "1234 4321 1010 5454",
             "cvv": "123",
             "expiry_date": "01/26",
-            "errors": []
+            "errors": [],
         },
     },
     "card4.png": {
@@ -47,7 +47,7 @@ EXPECTED_RESULTS = {
             "card_number": None,
             "cvv": None,
             "expiry_date": None,
-            "errors": ['cardholder name', 'card number', 'cvv', 'expiry date']
+            "errors": ["cardholder name", "card number", "cvv", "expiry date"],
         },
     },
 }
@@ -71,7 +71,9 @@ class TestCardScanner:
     Tests for the Google OCR API and credit card info parser
     """
 
-    @pytest.mark.parametrize("image_file", ["card1.png", "card2.png", "card3.png", "card4.png"])
+    @pytest.mark.parametrize(
+        "image_file", ["card1.png", "card2.png", "card3.png", "card4.png"]
+    )
     def test_text_detection_with_real_images(self, image_file, mocker):
         """
         Test text detection using real card images but mock the Vision API response.
@@ -92,7 +94,9 @@ class TestCardScanner:
 
         assert result == EXPECTED_RESULTS[image_file]["text"]
 
-    @pytest.mark.parametrize("image_file", ["card1.png", "card2.png", "card3.png", "card4.png"])
+    @pytest.mark.parametrize(
+        "image_file", ["card1.png", "card2.png", "card3.png", "card4.png"]
+    )
     # pylint: disable=too-many-locals
     def test_parse_card_info_with_real_images(self, image_file, mocker):
         """
@@ -121,7 +125,7 @@ class TestCardScanner:
             expiry_date,
             ret_username,
             ret_cardname,
-            errors
+            errors,
         ) = parse_card_info(detected_text, username, cardname)
 
         expected = EXPECTED_RESULTS[image_file]["parsed"]
@@ -131,7 +135,7 @@ class TestCardScanner:
         assert expiry_date == expected["expiry_date"]
         assert ret_username == username
         assert ret_cardname == cardname
-        assert errors == expected['errors']
+        assert errors == expected["errors"]
 
     @pytest.mark.parametrize("image_file", ["card1.png", "card2.png", "card3.png"])
     # pylint: disable=redefined-outer-name
@@ -175,6 +179,7 @@ class TestCardScanner:
         assert card_info["username"] == "test_user"
         assert card_info["cardname"] == f"test_{image_file}"
 
+
 # pylint: disable=redefined-outer-name
 def test_scan_card_internal_server_error(test_client, mocker):
     """
@@ -196,9 +201,7 @@ def test_scan_card_internal_server_error(test_client, mocker):
     mocker.patch("main.detect_text", side_effect=mock_detect_text)
 
     response = test_client.post(
-        "/api/scan", 
-        data=data, 
-        content_type="multipart/form-data"
+        "/api/scan", data=data, content_type="multipart/form-data"
     )
 
     assert response.status_code == 500
