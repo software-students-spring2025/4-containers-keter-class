@@ -25,6 +25,7 @@ def app_fixture():
     # Drop users collection before each test for a clean slate
     with app1.app_context():
         app1.db.users.delete_many({})
+        app1.db.cards.delete_many({})
 
     return app1
 

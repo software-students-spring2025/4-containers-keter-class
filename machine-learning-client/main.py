@@ -1,24 +1,25 @@
+# pylint: disable=no-name-in-module,reimported,import-error
 """
 Machine learning API and parsing and storage of credit card information
 """
 
 import os
 import re
-import requests
-from flask import Flask, request, jsonify, redirect
+from flask import Flask, request, jsonify
 from flask_cors import CORS
+from google.cloud import vision
 
 app = Flask(__name__)
 CORS(app)
 
 if os.environ.get("PYTEST_CURRENT_TEST") is None:
-    from google.cloud import vision  # pylint: disable=no-name-in-module
+    from google.cloud import vision
 
     os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "client_secrets.json"
     api_client = vision.ImageAnnotatorClient()
 else:
     from unittest.mock import MagicMock
-    from google.cloud import vision  # pylint: disable=no-name-in-module
+    from google.cloud import vision
 
     api_client = MagicMock()
 
@@ -53,32 +54,36 @@ def parse_card_info(card_scan, username, cardname):
     cardholder_names = re.findall(
         r"\b[A-Za-z]+(?:\s+[A-Za-z]\.?)?(?:\s+[A-Za-z]+)+\b", card_scan, re.IGNORECASE
     )
-    filter_terms = [
-        "business",
-        "world",
-        "thru",
-        "good",
-        "valid",
-        "visa",
-        "credit",
-        "union",
-        "texas",
-        "rewards",
-        "american",
-        "express",
-        "master",
-        "gold",
-        "black",
-        "discover",
-        "bilt",
-        "valid thru",
-        "good thru",
-    ]
 
     filtered_names = [
         name
         for name in cardholder_names
-        if not any(term.lower() in name.lower() for term in filter_terms)
+        if not any(
+            x.upper() in name.upper()
+            for x in [
+                "\n",
+                "BUSINESS",
+                "WORLD",
+                "THRU",
+                "GOOD THRU",
+                "VALID THRU",
+                "GOOD",
+                "VISA",
+                "CREDIT",
+                "UNION",
+                "TEXAS",
+                "REWARDS",
+                "AMERICAN",
+                "EXPRESS",
+                "MASTER",
+                "GOLD",
+                "BLACK",
+                "DISCOVER",
+                "BILT",
+                "SEC CODE",
+                "VALID",
+            ]
+        )
     ]
 
     if filtered_names:
@@ -110,6 +115,7 @@ def parse_card_info(card_scan, username, cardname):
 
 @app.route("/api/scan", methods=["POST"])
 def scan_card():
+<<<<<<< HEAD
     """Handles image uploads and scans for credit card text."""
 
     if "file" not in request.files:
@@ -146,16 +152,59 @@ def scan_card():
     web_app_url = "http://web-app:5002/verify_info"
     headers = {"Content-Type": "application/json"}
 
+=======
+    """
+    Access CV to get text information from image
+    Parse card information from text information
+    Return information to web app
+    """
+>>>>>>> 5bdf675e883b6b21323263bc74652456cfd6a173
     try:
-        response = requests.post(
-            web_app_url, json=card_data, headers=headers, timeout=5
+        if "file" not in request.files:
+            return jsonify({"error": "No file provided"}), 400
+
+        file = request.files["file"]
+
+        if file.filename == "":
+            return jsonify({"error": "Empty filename"}), 400
+
+        username = request.form.get("username", "default_user")
+        cardname = request.form.get("cardname", "unnamed_card")
+
+        image_content = file.read()
+        text = detect_text(image_content)  # ← could be the error!
+
+        if not text:
+            return jsonify({"error": "No text detected in image"}), 400
+
+        card_info = parse_card_info(text, username, cardname)
+
+        card_data = {
+            "cardholder_name": card_info[0],
+            "card_number": card_info[1],
+            "cvv": card_info[2],
+            "expiry_date": card_info[3],
+            "username": username,
+            "cardname": cardname,
+        }
+
+        urlthing = "retrieve"
+        query_string = "&".join([f"{key}={value}" for key, value in card_data.items()])
+        redirect_url = f"http://localhost:5002/{urlthing}?{query_string}"
+
+        if os.environ.get("PYTEST_CURRENT_TEST") is not None:
+            return jsonify({"success": True, "card_info": card_data}), 200
+
+        # Redirect to the verify_info page with the card data
+        return jsonify(
+            {"success": True, "redirect_url": redirect_url, "card_data": card_data}
         )
-        if response.status_code == 200:
-            return jsonify({"message": "Card scanned and saved successfully."}), 200
-        return jsonify({"error": "Failed to save card via /verify_info"}), 500
-    except Exception as e:
-        print("❌ Error posting to web app:", str(e))
-        return jsonify({"error": "Failed to communicate with web app."}), 500
+
+    except Exception as e:  # pylint: disable=broad-exception-caught
+        import traceback  # pylint: disable=import-outside-toplevel
+
+        traceback.print_exc()  # 🔥 Print full traceback
+        return jsonify({"error": f"Internal Server Error: {str(e)}"}), 500
 
 
 if __name__ == "__main__":

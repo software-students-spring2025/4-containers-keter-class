@@ -26,20 +26,25 @@
 
   {% if cards %}
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-      {% for card in cards %}
-        <div class="col">
-          <div class="card h-100 shadow-sm">
-            <div class="card-body">
-              <h5 class="card-title">{{ card.cardname }}</h5>
-              <p class="card-text"><strong>Cardholder:</strong> {{ card.cardholder_name }}</p>
-              <p class="card-text"><strong>Number:</strong> {{ card.card_number }}</p>
-              <p class="card-text"><strong>Expiry:</strong> {{ card.expiry_date }}</p>
-              <p class="card-text"><strong>CVV:</strong> {{ card.cvv }}</p>
-              <p class="card-text text-muted"><small>User: {{ card.username }}</small></p>
-            </div>
+    {% for card in cards %}
+      <div class="col">
+        <div class="card h-100 shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title">{{ card.cardname }}</h5>
+            <p class="card-text"><strong>Cardholder:</strong> {{ card.cardholder_name }}</p>
+            <p class="card-text"><strong>Number:</strong> {{ card.card_number }}</p>
+            <p class="card-text"><strong>Expiry:</strong> {{ card.expiry_date }}</p>
+            <p class="card-text"><strong>CVV:</strong> {{ card.cvv }}</p>
+            <p class="card-text text-muted"><small>User: {{ card.username }}</small></p>
+            <!-- Add a delete button -->
+            <form action="{{ url_for('main.delete_card', card_id=card._id) }}" method="POST" style="display:inline;">
+              <button type="submit" class="btn btn-danger btn-sm">🗑️ Delete</button>
+            </form>
           </div>
         </div>
-      {% endfor %}
+      </div>
+    {% endfor %}
+    
     </div>
   {% else %}
     <p>No cards found.</p>

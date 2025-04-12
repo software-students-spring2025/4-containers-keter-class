@@ -87,9 +87,23 @@
           return res.json();
         })
         .then(data => {
+<<<<<<< HEAD
           console.log("✅ Scan complete:", data);
           //window.location.href = "/dashboard";
         })
+=======
+            console.log("✅ Scan complete:", data);
+
+            const cardData = data.card_data;  // NOT data.card_data as a string or redirect_url
+
+            const queryString = Object.keys(cardData)
+            .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(cardData[key] ?? '')}`)
+            .join("&");
+
+
+            window.location.href = `/retrieve?${queryString}`;
+})
+>>>>>>> 5bdf675e883b6b21323263bc74652456cfd6a173
         .catch(err => {
           alert("Upload failed. See console.");
           console.error(err);

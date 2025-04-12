@@ -4,15 +4,22 @@
 
 
 # Keter Class
-Our application contains the following: web page that helps you track your credit cards. Uses computer vision to convert credit card to plain text and stores in mongodb, and is displayed.
+This application is a web page that helps you track your credit cards. Uses computer vision to convert credit card to plain text and stores in mongodb, and is displayed on a dashboard. Users can take a photo of their credit card using their camera, and can access saved card information through the dashboard. Please use example credit cards in `machine-learning-client/Images` unless you want your bank account information potentially stolen.
 
 # Team
 * Brian Zou [Brian's Github](https://github.com/brianzou03)
-* Bryant To
-* Anna Ye
-* Andrew Bao
+* Bryant To [Bryant's Github](https://github.com/bryantto08)
+* Anna Ye [Anna's Github](https://github.com/AnnaTheYe)
+* Andrew Bao [Andrew's Github](https://github.com/andrew-bao)
 
 # How to Run via Docker
+### Full Application
+```
+cd 4-containers-keter-class
+pipenv shell
+docker-compose up --build
+```
+
 ### Machine Learning Client
 ```
 cd machine-learning-client
@@ -40,7 +47,8 @@ brew services start mongodb/brew/mongodb-community
 ### Unit tests for web-app
 ```
 cd web-app
-pytest
+pipenv shell
+pipenv run pytest --cov=app --cov-report=term-missing
 ```
 
 ## Machine Learning Client
@@ -57,13 +65,16 @@ pip install -r requirements.txt
 ### Unit tests for machine learning client
 ```
 cd machine-learning-client
-pytest
+pipenv shell
+pipenv run pytest --cov=main --cov-report=term-missing
 ```
 
+# Task Board
+View our task board [here](https://github.com/orgs/software-students-spring2025/projects/171)
 
 # Technology
 * Python / Flask
 * Docker
 * MongoDB
-* CV Library (here)
+* CV Library [(here)](https://cloud.google.com/vision/docs/ocr)
 
