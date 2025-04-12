@@ -202,7 +202,7 @@ def test_scan_card_internal_server_error(test_client, mocker):
 
     response = test_client.post(
         "/api/scan", data=data, content_type="multipart/form-data"
-)
+    )
 
     assert response.status_code == 500
 
