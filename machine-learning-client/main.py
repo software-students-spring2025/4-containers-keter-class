@@ -115,50 +115,11 @@ def parse_card_info(card_scan, username, cardname):
 
 @app.route("/api/scan", methods=["POST"])
 def scan_card():
-<<<<<<< HEAD
-    """Handles image uploads and scans for credit card text."""
-
-    if "file" not in request.files:
-        return jsonify({"error": "No file provided"}), 400
-
-    file = request.files["file"]
-    if file.filename == "":
-        return jsonify({"error": "Empty filename"}), 400
-
-    username = request.form.get("username", "default_user")
-    cardname = request.form.get("cardname", "unnamed_card")
-
-    image_content = file.read()
-    text = detect_text(image_content)
-
-    if not text:
-        return jsonify({"error": "No text detected in image"}), 400
-
-    card_info = parse_card_info(text, username, cardname)
-    card_data = {
-        "cardholder_name": card_info[0],
-        "card_number": card_info[1],
-        "cvv": card_info[2],
-        "expiry_date": card_info[3],
-        "username": card_info[4],
-        "cardname": card_info[5],
-    }
-
-    print("🧠 Parsed card data:", card_data)
-
-    if os.environ.get("PYTEST_CURRENT_TEST") is not None:
-        return jsonify({"success": True, "card_info": card_data}), 200
-
-    web_app_url = "http://web-app:5002/verify_info"
-    headers = {"Content-Type": "application/json"}
-
-=======
     """
     Access CV to get text information from image
     Parse card information from text information
     Return information to web app
     """
->>>>>>> 5bdf675e883b6b21323263bc74652456cfd6a173
     try:
         if "file" not in request.files:
             return jsonify({"error": "No file provided"}), 400
