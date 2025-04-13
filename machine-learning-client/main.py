@@ -101,7 +101,7 @@ def parse_card_info(card_scan, username, cardname):
         card_number = card_number[0]
 
     cvv = re.findall(r"(?<![.-])\b\d{3}\b(?![.-]\d)", card_scan)
-    cvv = cvv[0] if cvv else "000"
+    cvv = cvv[0] if cvv else None
     if not cvv:
         errors.append("cvv")
 
@@ -164,7 +164,7 @@ def scan_card():
     except Exception as e:  # pylint: disable=broad-exception-caught
         import traceback  # pylint: disable=import-outside-toplevel
 
-        traceback.print_exc()  # 🔥 Print full traceback
+        traceback.print_exc()
         return jsonify({"error": f"Internal Server Error: {str(e)}"}), 500
 
 
