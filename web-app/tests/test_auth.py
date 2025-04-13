@@ -5,7 +5,7 @@ docstring
 
 def test_register(client):
     """
-    idk
+    Test registrating new user
     """
     response = client.post(
         "/register",
@@ -19,7 +19,7 @@ def test_register(client):
 
 def test_register_duplicate(client):
     """
-    idk
+    Duplicate users should not be registered
     """
     client.post("/register", data={"username": "testuser", "password": "password123"})
     response = client.post(
@@ -34,7 +34,7 @@ def test_register_duplicate(client):
 
 def test_login_success(client):
     """
-    idk
+    Test successful login
     """
     client.post("/register", data={"username": "testuser", "password": "password123"})
     response = client.post(
@@ -48,7 +48,7 @@ def test_login_success(client):
 
 def test_login_fail(client):
     """
-    idk
+    Test login with invalid credentials
     """
     response = client.post(
         "/login",
@@ -61,7 +61,7 @@ def test_login_fail(client):
 
 def test_logout(client):
     """
-    idk
+    Test log out of session
     """
     client.post("/register", data={"username": "testuser", "password": "password123"})
     client.post("/login", data={"username": "testuser", "password": "password123"})
