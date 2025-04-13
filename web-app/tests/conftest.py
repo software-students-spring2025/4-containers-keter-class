@@ -14,7 +14,7 @@ werkzeug.__version__ = "2.3.7"  # Monkey patch to prevent AttributeError
 @pytest.fixture
 def app_fixture():
     """
-    idk
+    Pytest fixture for app
     """
     # Use a temp test DB
     os.environ["MONGO_URI"] = "mongodb://localhost:27017/test_flaskdb"
@@ -33,6 +33,6 @@ def app_fixture():
 @pytest.fixture
 def client(app_fixture):
     """
-    idk
+    Pytest fixture for client
     """
     return app_fixture.test_client()
